@@ -6,15 +6,15 @@ public class Node : MonoBehaviour {
 
     public Vector3 vitesse = new Vector3(0,0,0);
     public Vector3 lastPosition;
-    public Vector3 position;
 
     //Node number in the nodes list
     public int number = 0;
-    public int mass = 1;
+    public float mass;
 
 
     // Use this for initialization
     void Start () {
+        mass = Random.Range(1.0f, 5.0f);
 
     }
 	
@@ -40,11 +40,11 @@ public class Node : MonoBehaviour {
 
     }
 
-    public Vector3 CalculPosition(Vector3 _vitesse, Vector3 _positionActuel) {
+    public Vector3 CalculPosition(Vector3 _vitesse, Vector3 _positionActuel, float _time) {
 
         Vector3 position;
 
-        return position = _vitesse + _positionActuel;
+        return position = _positionActuel + (_vitesse * _time);
 
     }
 

@@ -382,7 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodes: []
   model: {fileID: 1711229688524468, guid: cda95df91bc56114983c5c11c32c6218, type: 2}
-  nodesNumbers: 1
+  nodesNumbers: 50
   limitX: 4
   limitWall: 3.98
 --- !u!1 &1458134447
