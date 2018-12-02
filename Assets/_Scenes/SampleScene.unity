@@ -296,7 +296,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.4745098, g: 0.19215688, b: 0.2437793, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -383,8 +383,10 @@ MonoBehaviour:
   nodes: []
   model: {fileID: 1711229688524468, guid: cda95df91bc56114983c5c11c32c6218, type: 2}
   nodesNumbers: 50
-  limitX: 4
-  limitWall: 3.98
+  H: 1
+  Rho0: 0.3
+  K: 10
+  KNear: 100
 --- !u!1 &1458134447
 GameObject:
   m_ObjectHideFlags: 0

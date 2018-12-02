@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Nodes_Simulation : MonoBehaviour {
 
-    public Node[] nodes;
+    //Nodes
+    public List<Node> nodes;
     public GameObject model;
-    public int nodesNumbers = 1;
-    public float limitX = 3.5f; //Valeur limite en X lors de la création des nodes
-    public float limitWall = 4f; //Valeur d'impact des murs
-    public const float fg = 1f; //Force Gravitationnelle
+    public int nodesNumbers = 0;
 
+    float limitX = 3.5f; //Valeur limite en X lors de la création des nodes
+    float limitWall = 4f; //Valeur d'impact des murs
+    const float fg = 1f; //Force Gravitationnelle
+
+    float spawnTime = 100f;
+
+
+    //Use for the Double Density Relaxation
     public float H;
     public float Rho0;
     public float K;
@@ -19,21 +25,23 @@ public class Nodes_Simulation : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-        nodes = new Node[nodesNumbers];
+    }
 
-        if (nodes.Length < 1) {
-            Debug.Log("Erreur, chaine impossible");
-            Application.Quit();
-        }
+    // Update is called once per frame
+    void Update() {
 
-        NodesGeneration();
-
+        PoppingNodes();
+        FluidGestion();
 
     }
 
     // Update is called once per frame
     void FixedUpdate() {
 
+
+    }
+
+    public void FluidGestion() {
         foreach (Node node in nodes) {
 
             //Debug.Log("N° " + node.number + " : " + node.vitesse.ToString());
@@ -50,21 +58,34 @@ public class Nodes_Simulation : MonoBehaviour {
 
         CollisionGestion();
 
+        DoubleDensityRelaxation();
+
         foreach (Node node in nodes) {
 
             node.vitesse = (node.gameObject.transform.position - node.lastPosition) / Time.fixedDeltaTime;
 
         }
+
+
     }
 
+    public void PoppingNodes() {
+        float timer = 0f;
 
-    public bool Collision(Node _node) {
+        if (timer <= 0.0f) {
+            if (Input.GetMouseButton(0)) {
+                Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 nodePosition = new Vector3(cursorPosition.x, cursorPosition.y, 0.0f);
+                GameObject node = Instantiate(model, nodePosition, Quaternion.identity, transform);
+                node.GetComponent<Node>().lastPosition = node.transform.position;
+                nodes.Add(node.GetComponent<Node>());
 
-        if (_node.gameObject.transform.position.y < -limitWall || _node.gameObject.transform.position.x < -limitWall || _node.gameObject.transform.position.x > limitWall) {
-            return true;
+                CollisionGestion();
+                timer = spawnTime;
+            }
         }
         else {
-            return false;
+            timer -= Time.fixedDeltaTime;
         }
     }
 
@@ -77,9 +98,9 @@ public class Nodes_Simulation : MonoBehaviour {
             Vector3 tmp = Vector3.zero;
 
             //Sol
-            if (node.gameObject.transform.position.y < -4f) {
+            if (node.gameObject.transform.position.y < -limitWall) {
                 Debug.Log("Collision sol");
-                tmp.y += -4f - node.gameObject.transform.position.y;
+                tmp.y += -limitWall - node.gameObject.transform.position.y;
             }
             //Mur gauche
             else if (node.gameObject.transform.position.x < -limitWall) {
@@ -127,19 +148,19 @@ public class Nodes_Simulation : MonoBehaviour {
         }
     }
 
-    public void NodesGeneration() {
-
-        for (int i = 0; i < nodes.Length; i++) {
-            GameObject node = Instantiate(model, gameObject.transform);
-            nodes[i] = node.GetComponent<Node>();
-            node.transform.position += new Vector3(Random.Range(-limitX, limitX), 0);
-            nodes[i].lastPosition = node.transform.position;
-
-            nodes[i].number = i;
-        }
-    }
 }
 
+//public void NodesGeneration() {
+
+//    for (int i = 0; i < nodes.Length; i++) {
+//        GameObject node = Instantiate(model, gameObject.transform);
+//        nodes[i] = node.GetComponent<Node>();
+//        node.transform.position += new Vector3(Random.Range(-limitX, limitX), 0);
+//        nodes[i].lastPosition = node.transform.position;
+
+//        nodes[i].number = i;
+//    }
+//}
 //public void CollisionAlt() {
 //    foreach (Particle p in particles) {
 //        if (p.transform.position.x < -20.0f)
